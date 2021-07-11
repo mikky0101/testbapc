@@ -1,0 +1,134 @@
+{% extends "base.html" %} {% load crispy_forms_tags %} {% block content %}
+<body>
+  <div class="col-md-12 mb-4">
+    <h4 class="d-flex justify-content-between align-items-center mb-3">
+      <span class="text-muted">Your cart</span>
+      <span class="badge badge-secondary badge-pill"
+        >{{ order.items.count }}</span
+      >
+    </h4>
+    <ul class="list-group mb-3 z-depth-1">
+      <form id="paymentForm">
+        {% csrf_token %}
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div class="form-group">
+            <label class="my-0" for="email">Email Address</label>
+            <input
+              class="my-0"
+              type="email"
+              id="email-address"
+              value="{{request.user.email}}"
+              placeholder="{{request.user.email}}"
+              readonly
+              required
+            />
+          </div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div class="form-group">
+            <label class="my-0" for="amount">amount</label>
+            <input
+              class="my-0"
+              type="tel"
+              id="amount"
+              value="{{ order.get_total }}"
+              placeholder="{{ order.get_total }}"
+              readonly
+              required
+            />
+          </div>
+        </li>
+        <!-- <div class="form-group">
+            <label for="last-name">Last Name</label>
+            <input type="text" id="last-name" />
+          </div> -->
+        <div class="form-submit" class="input-group-append">
+          <button
+            class="btn btn-secondary btn-md waves-effect m-0"
+            type="submit"
+            onclick="payWithPaystack()"
+          >
+            Pay
+          </button>
+        </div>
+      </form>
+    </ul>
+  </div>
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <script>
+    const paymentForm = document.getElementById("paymentForm");
+    paymentForm.addEventListener("submit", payWithPaystack, false);
+    function payWithPaystack(e) {
+      e.preventDefault();
+      let handler = PaystackPop.setup({
+        key: "{{ key }}", // Replace with your public key
+        email: document.getElementById("email-address").value,
+        amount: document.getElementById("amount").value * 100,
+        ref: "" + Math.floor(Math.random() * 1000000000 + 1), // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+        // label: "Optional string that replaces customer email"
+        onClose: function () {
+          alert("Window closed.");
+        },
+        callback: function (response) {
+          let message = "Payment complete! Reference: " + response.reference;
+          alert(message);
+        },
+      });
+      handler.openIframe();
+    }
+  </script>
+
+  <script>
+    var paymentForm = document.getElementById("paymentForm");
+    paymentForm.addEventListener("submit", payWithPaystack, false);
+    function payWithPaystack() {
+      var handler = PaystackPop.setup({
+        key: "{{ key }}", // Replace with your public key
+        email: document.getElementById("email-address").value,
+        amount: document.getElementById("amount").value * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
+        currency: "NGN", // Use GHS for Ghana Cedis or USD for US Dollars
+        ref: "YOUR_REFERENCE", // Replace with a reference you generated
+        callback: function (response) {
+          //this happens after the payment is completed successfully
+          var reference = response.reference;
+          alert("Payment complete! Reference: " + reference);
+          // Make an AJAX call to your server with the reference to verify the transaction
+        },
+        onClose: function () {
+          alert("Transaction was not completed, window closed.");
+        },
+      });
+      handler.openIframe();
+    }
+  </script>
+
+  {% endblock content %} {% block extra_scripts %}
+  <script>
+    var hideable_shipping_form = $(".hideable_shipping_form");
+    var hideable_billing_form = $(".hideable_billing_form");
+
+    var use_default_shipping = document.querySelector(
+      "input[name=use_default_shipping]"
+    );
+    var use_default_billing = document.querySelector(
+      "input[name=use_default_billing]"
+    );
+
+    use_default_shipping.addEventListener("change", function () {
+      if (this.checked) {
+        hideable_shipping_form.hide();
+      } else {
+        hideable_shipping_form.show();
+      }
+    });
+
+    use_default_billing.addEventListener("change", function () {
+      if (this.checked) {
+        hideable_billing_form.hide();
+      } else {
+        hideable_billing_form.show();
+      }
+    });
+  </script>
+  {% endblock extra_scripts %}
+</body>

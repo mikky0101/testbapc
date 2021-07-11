@@ -1,0 +1,139 @@
+{% load static %} {% load cart_template_tags %}
+<header class="header">
+  <div class="header-top">
+    <div class="container-fluid">
+      <div class="header-left">
+        <div class="header-dropdown">
+          <a href="#">NGN</a>
+          <div class="header-menu"></div>
+          <!-- End .header-menu -->
+        </div>
+        <!-- End .header-dropdown -->
+
+        <div class="header-dropdown">
+          <a href="#">Eng</a>
+          <div class="header-menu"></div>
+          <!-- End .header-menu -->
+        </div>
+        <!-- End .header-dropdown -->
+      </div>
+      <!-- End .header-left -->
+
+      <div class="header-right">
+        <ul class="top-menu">
+          <li>
+            <a href="#">Links</a>
+            <ul>
+              <li>
+                <a href="tel:#"
+                  ><i class="icon-phone"></i>Call: +2348154549199</a
+                >
+              </li>
+              <li>
+                <a href=""
+                  ><i class="icon-heart-o"></i>Wishlist <span>(3)</span></a
+                >
+              </li>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Contact Us</a></li>
+              {% if request.user.is_authenticated %}
+              <a href="{% url 'account_logout' %}"
+                ><i class="icon-user"></i>Logout</a
+              >
+              {% else %}
+              <li>
+                <a href="{% url 'account_login' %}"
+                  ><i class="icon-user"></i>Login</a
+                >
+              </li>
+              {% endif %}
+            </ul>
+          </li>
+        </ul>
+        <!-- End .top-menu -->
+      </div>
+      <!-- End .header-right -->
+    </div>
+    <!-- End .container-fluid -->
+  </div>
+  <div class="header-middle sticky-header">
+    <div class="container-fluid">
+      <div class="header-left">
+        <button class="mobile-menu-toggler">
+          <span class="sr-only">Toggle mobile menu</span>
+          <i class="icon-bars"></i>
+        </button>
+
+        <a href="/" class="logo">
+          <img
+            src="{% static 'assets/images/mike.jpg' %}"
+            alt="Molla Logo"
+            width="105"
+            height="25"
+          />
+        </a>
+
+        <nav class="main-nav">
+          <ul class="menu sf-arrows">
+            <li>
+              <a href="/" class="sf-with-ul">Shop</a>
+            </li>
+            <li>
+              <a href="/" class="sf-with-ul">Product</a>
+            </li>
+            <li>
+              <a href="/" class="sf-with-ul">{{ request.user }}</a>
+            </li>
+          </ul>
+          <!-- End .menu -->
+        </nav>
+        <!-- End .main-nav -->
+      </div>
+      <!-- End .header-left -->
+
+      <div class="header-right">
+        <div class="header-search">
+          <a href="#" class="search-toggle" role="button" title="Search"
+            ><i class="icon-search"></i
+          ></a>
+          <form action="#" method="get">
+            <div class="header-search-wrapper">
+              <label for="q" class="sr-only">Search</label>
+              <input
+                type="search"
+                class="form-control"
+                name="q"
+                id="q"
+                placeholder="Search in..."
+                required
+              />
+            </div>
+            <!-- End .header-search-wrapper -->
+          </form>
+        </div>
+        <!-- End .header-search -->
+
+        <div class="dropdown cart-dropdown">
+          <a
+            href="#"
+            class="dropdown-toggle"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            data-display="static"
+          >
+            <i class="icon-shopping-cart"></i>
+            <span class="cart-count">{{ request.user|cart_item_count }}</span>
+          </a>
+
+          <!-- End .dropdown-menu -->
+        </div>
+        <!-- End .cart-dropdown -->
+      </div>
+      <!-- End .header-right -->
+    </div>
+    <!-- End .container-fluid -->
+  </div>
+</header>
+<!-- End .header -->
